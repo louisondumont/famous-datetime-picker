@@ -1,0 +1,6 @@
+[submodule "src/famous"]
+	path = src/famous
+	url = https://github.com/Famous/famous
+[submodule "src/famousLib"]
+	path = src/famousLib
+	url = https://github.com/Famous/lib
