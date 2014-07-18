@@ -169,7 +169,7 @@ define(function(require, exports, module) {
         this.eventHandler.on('pageChanged',function(e){
 
             // debugging
-            console.log('pageChanged fired: ' + e);
+            console.log('pageChanged fired. Page:' + e.page + ' Delta: ' + e.delta);
 
             // check if we reached the end (infinite scrolling)
             if((this._currentIndex + this.conf.offset) >= (this._surfaces.length-1)) {

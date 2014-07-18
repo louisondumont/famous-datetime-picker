@@ -26,7 +26,7 @@ define(function(require, exports, module) {
         this.selectedSurface = 1;
 
         // scrollview
-        scrollView = new ScrollView({
+        this.scrollView = new ScrollView({
             direction: Utility.Direction.Y,
             paginated: true
         });
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
             "mouse" : MouseSync,
             "touch" : TouchSync
         });
-        sync = new GenericSync(
+        this.sync = new GenericSync(
             ["mouse", "touch"],
             {direction : GenericSync.DIRECTION_Y}
         );
@@ -45,16 +45,16 @@ define(function(require, exports, module) {
         this.eventHandler = new EventHandler();
  
         // Bind&Pipe
-        scrollView.sequenceFrom(this.surfaces); // connect surfaces <=> scrollView
-        sync.pipe(scrollView);
+        this.scrollView.sequenceFrom(this.surfaces); // connect surfaces <=> scrollView
+        this.sync.pipe(this.scrollView);
 
         // Swipe tracking for events
-        enableSwipeTracking(scrollView);
+        enableSwipeTracking.call(this);
 
         // Initialization: 24 hours
         setContent.call(this);
 
-        this.add(scrollView);
+        this.add(this.scrollView);
     }
 
     /** 
@@ -86,7 +86,7 @@ define(function(require, exports, module) {
             });
 
             // pipe
-            temp.pipe(sync);
+            temp.pipe(this.sync);
 
             // add to the scrollview surfaces
             this.surfaces.push(temp);
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
             // listen for click on a time
             var index = this.surfaces.length-1;
             this.surfaces[index].on('click', function(surfaceIndex) {
-                if(!this.surfaces[surfaceIndex].isSwiping) return false;
+                if(this.scrollView.isSwiping) return false;
 
                 // extract only the time
                 var selectedTime = this.surfaces[surfaceIndex].getContent()
@@ -108,6 +108,8 @@ define(function(require, exports, module) {
                 this.surfaces[this.selectedSurface].removeClass('selected');
                 this.surfaces[surfaceIndex].addClass('selected');
 
+                console.log('hey')
+
                 this.selectedSurface = surfaceIndex;
             }.bind(this, index));
         }
@@ -115,17 +117,18 @@ define(function(require, exports, module) {
 
     /**
      * @desc Update isSwiping boolean so we can differentiate a click from a swipe
-     * @param {Scrollview} scrollview Scrollview to monitor
      */
-    function enableSwipeTracking(scrollview) {
-        scrollview.on('update', function() {
-            scrollview.isSwiping = true;
-        });
-        scrollview.on('end', function(){
+    function enableSwipeTracking() {
+        this.sync.on('update', function() {
+            console.log('updated')
+            this.scrollView.isSwiping = true;
+        }.bind(this));
+        this.sync.on('end', function(){
+            console.log(this.scrollView)
             setTimeout(function() {
-                scrollview.isSwiping = false;
-            }, 300);
-        });
+                this.scrollView.isSwiping = false;
+            }.bind(this), 300);
+        }.bind(this));
     }
 
     TimeScrollView.prototype = Object.create(View.prototype);

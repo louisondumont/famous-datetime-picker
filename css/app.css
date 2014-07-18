@@ -2,6 +2,10 @@ html {
   color: #000;
 }
 
+.bg-jogabo {
+   background: rgb(32,32,42);
+ }
+
 .month {
   padding-top: 55px;
   margin-left: 3px;
@@ -19,6 +23,8 @@ html {
   font-weight: 500;
   font-size: 1.05em;
 }
+
+
 
 .pad-left {
   padding-left: 10px;
@@ -308,3 +314,6 @@ input[type=date]::-webkit-clear-button {
   margin: auto;
 }
 
+.selected > .time  {
+  background: rgb(221, 234, 67);
+}
